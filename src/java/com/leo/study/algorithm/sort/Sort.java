@@ -22,7 +22,6 @@ public abstract class Sort<T extends Comparable<T>> implements Comparable<Sort<T
         time = System.currentTimeMillis() - begin;
     }
 
-    @Override
     public int compareTo(Sort<T> o) {
         int result = (int) (time - o.time);
         if (result != 0) {
