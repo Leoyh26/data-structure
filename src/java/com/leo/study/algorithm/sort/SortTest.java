@@ -3,6 +3,7 @@ package com.leo.study.algorithm.sort;
 import com.leo.study.algorithm.sort.cmp.*;
 import com.leo.study.tools.Asserts;
 import com.leo.study.tools.Integers;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -30,6 +31,7 @@ public class SortTest {
             new MergeSort(),
             new ShellSort()*/
         );
+        LoggerFactory.getLogger(SortTest.class);
     }
 
     static void testSorts(Integer[] array, Sort... sorts) {
