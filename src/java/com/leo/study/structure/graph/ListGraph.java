@@ -258,6 +258,56 @@ public class ListGraph<V, E> extends Graph<V, E> {
     }
 
     @Override
+    public Map<V, E> shortestPath(V begin) {
+        Vertex<V, E> beginVertex = vertices.get(begin);
+        if (beginVertex == null) {
+            return null;
+        }
+        Map<V, E> selectedPaths  = new HashMap<>();
+        Map<Vertex<V, E>, E> paths = new HashMap<>();
+        // 初始化paths
+        for (Edge<V, E> edge : beginVertex.outEdges) {
+            paths.put(edge.to, edge.weight);
+        }
+
+        while (!paths.isEmpty()) {
+            Map.Entry<Vertex<V, E>, E> minEntry = getMintPath(paths);
+            Vertex<V, E> minVertex = minEntry.getKey();
+            selectedPaths.put(minVertex.value, minEntry.getValue());
+            paths.remove(minVertex);
+            for (Edge<V, E> edge : minVertex.outEdges) {
+                if (selectedPaths.containsKey(edge.to.value) || edge.to.equals(beginVertex)) {
+                    continue;
+                }
+                relax();
+                E newWeight = weightManager.add(minEntry.getValue(), edge.weight);
+                E oldWeight = paths.get(edge.to);
+                if (oldWeight == null || weightManager.compare(newWeight, oldWeight) < 0) {
+                    paths.put(edge.to, newWeight);
+                }
+            }
+        }
+
+        return selectedPaths;
+    }
+
+    private void relax() {
+
+    }
+
+    private Map.Entry<Vertex<V, E>, E> getMintPath(Map<Vertex<V, E>, E> paths){
+        Iterator<Map.Entry<Vertex<V, E>, E>> iterator = paths.entrySet().iterator();
+        Map.Entry<Vertex<V, E>, E> minEntry = iterator.next();
+        while (iterator.hasNext()) {
+            Map.Entry<Vertex<V, E>, E> entry = iterator.next();
+            if (weightManager.compare(entry.getValue(), minEntry.getValue()) < 0) {
+                minEntry = entry;
+            }
+        }
+        return minEntry;
+    }
+
+    @Override
     public Set<EdgeInfo> mst() {
         return prim();
     }
